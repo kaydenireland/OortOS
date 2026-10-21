@@ -1,3 +1,12 @@
+## With Make
+- ```make clean``` to clean temporary files
+- ```make boot``` to compile src into bin
+- ```make run``` to compile src and run with qemu
+- ```make all``` to run every make command
+
+Note: Make only compiles files that have changed since last compilation, unless the tmp/bin files have been deleted.
+
+
 ## With GCC (Windows + MinGW64)
 
 Assemble bootloader:
@@ -19,5 +28,5 @@ Verify the boot sector:
 
 Run with QEMU:
 1. ```bash
-   qemu -drive format=raw,file=bin/boot.bin
+   qemu-system-i386 -drive format=raw,file=bin/boot.bin
    ```

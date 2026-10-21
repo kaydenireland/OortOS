@@ -45,5 +45,5 @@ oort:
 .include "src/boot/protected.s"
 
 # padding and magic num
-.org 510 
+.org 510
 .word 0xAA55
