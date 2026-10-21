@@ -1,5 +1,5 @@
 .macro bprint msg
-    mov $\msg, %si   # loads address of msg into %si
+    movw $\msg, %si   # loads address of msg into %si
 
     1:
         lodsb   # loads string byte of %esi or %rsi and puts it at %al, also increment %si

@@ -1,9 +1,9 @@
 .section .text
-.include "src/boot/bprint.s"
-.include "src/boot/gdt.s"
 
 .globl _start
 .code16                 # 16 bit real mode
+
+.include "src/boot/bprint.s"
 
 _start:
 
@@ -17,6 +17,8 @@ _start:
     movw %bp, %sp       # set stack pointer
     sti                 # turn interrupts back on
 
+    bprintln oort
+
     # enable A20 address line
     inb $0x92, %al
     orb $2, %al
@@ -24,9 +26,23 @@ _start:
 
     jmp load_gdt        # load gdt table to switch to protected mode
 
+load_gdt:
+    cli
+    lgdt (gdt_descriptor)
+    movl %cr0, %eax
+    orb $1, %al
+    movl %eax, %cr0
+    ljmpl $0x08, $_start32
 
 loop16: # infinite loop
     jmp loop16
+
+oort:
+    .asciz "Booting OortOS."
+
+# rodata modules
+.include "src/boot/gdt.s"
+.include "src/boot/protected.s"
 
 # padding and magic num
 .org 510 

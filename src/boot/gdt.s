@@ -1,4 +1,3 @@
-.section .rodata    # static structures: read-only data
 .align 8            # align gdt to an 8-byte boundary
 
 gdt_start:
@@ -28,19 +27,4 @@ gdt_end:
 .globl gdt_descriptor
 gdt_descriptor:
     .word (gdt_end - gdt_start) - 1     # size of gdt table minus 1
-    .long gdt_start + 0x7C00 
-
-
-.section .text  # code
-
-.include "src/boot/protected.s"
-
-.globl load_gdt
-load_gdt:
-    cli
-    lgdt (gdt_descriptor)
-    movl %cr0, %eax
-    orb $1, %al
-    movl %eax, %cr0
-    ljmp $0x08, $_start32
-    ret
+    .long gdt_start

@@ -1,6 +1,6 @@
 ## With GCC (Windows + MinGW64)
 
-Assemble `boot.s`:
+Assemble bootloader:
 1. ```bash
    gcc -m32 -c src/boot/real.s -o tmp/boot.o
    ```

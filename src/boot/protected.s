@@ -1,4 +1,3 @@
-.section .text
 .code32
 
 .globl _start32
