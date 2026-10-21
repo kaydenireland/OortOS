@@ -2,7 +2,7 @@
 
 Assemble `boot.s`:
 1. ```bash
-   gcc -m32 -c src/boot/boot.s -o tmp/boot.o
+   gcc -m32 -c src/boot/real.s -o tmp/boot.o
    ```
 2. ```bash
    ld -m i386pe -Ttext 0x7C00 tmp/boot.o -o tmp/boot.exe

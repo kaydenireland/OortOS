@@ -27,4 +27,3 @@
     movb $0x0D, %al   # Carriage Return
     int $0x10
 .endm
-
