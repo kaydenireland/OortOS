@@ -17,7 +17,18 @@ _start32:
     movl %ebp, %esp
 
     call check_cpuid
+    testw %ax, %ax
+    jz no_cpuid
+
+
     call check_long_mode
+    cmpw $2, %ax
+    jne no_long_mode
+
+    call setup_page_tables
+    call enable_paging
+
+    ljmpl $0x18, $_start64
 
 
     jmp loop32
@@ -58,7 +69,7 @@ check_long_mode:
 
     movl $0x80000001, %eax
     cpuid
-    test CPUID_EXT_LM, %edx
+    testl $0x20000000, %edx
     jz .no_long_mode
     
     .has_long_mode:
@@ -68,6 +79,16 @@ check_long_mode:
     .no_long_mode:
         movw $3, %ax
         ret
+
+no_cpuid:
+    jmp no_long_mode
+
+no_long_mode:
+    jmp loop32
+
+.include "src/boot/gdt.s"
+.include "src/boot/page_table.s"
+.include "src/boot/long.s"
 
 loop32:
     jmp loop32
