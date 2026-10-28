@@ -33,6 +33,16 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
+
+# Dynamically calculate the number of sectors that need to be loaded to the disk
+KERNEL_SECTORS_INC = $(TMP_DIR)/kernel_sectors.inc
+
+$(KERNEL_SECTORS_INC): $(PROT_BIN) | $(TMP_DIR)
+	@bytes=$$(wc -c < $(PROT_BIN)); \
+	sectors=$$(( (bytes + 511) / 512 )); \
+	echo ".equ KERNEL_SECTORS, $$sectors" > $@; \
+	echo "Kernel size: $$bytes bytes ($$sectors sectors)"
+
 .PHONY: all boot clean
 
 all: boot
@@ -46,7 +56,7 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 # Stage 1: BIOS boot sector
-$(BOOT_OBJ): $(BOOT_SRC) | $(TMP_DIR)
+$(BOOT_OBJ): $(BOOT_SRC) $(KERNEL_SECTORS_INC) | $(TMP_DIR)
 	$(AS) $(ASFLAGS_32) -c $(BOOT_SRC) -o $(BOOT_OBJ)
 
 $(BOOT_EXE): $(BOOT_OBJ)
@@ -78,7 +88,9 @@ $(PROT_BIN): $(PROT_EXE) | $(BIN_DIR)
 # Assemble flat disk block sequence
 $(OORT_IMG): $(BOOT_BIN) $(PROT_BIN) | $(BIN_DIR)
 	$(CP) $(BOOT_BIN) $(OORT_IMG)
-	$(DD) if=/dev/zero bs=512 count=50 >> $(OORT_IMG)
+	$(DD) if=/dev/zero bs=512 \
+		count=$$(( ($$(wc -c < $(PROT_BIN)) + 511) / 512 )) \
+		>> $(OORT_IMG)
 	$(DD) if=$(PROT_BIN) of=$(OORT_IMG) bs=512 seek=1 conv=notrunc
 
 clean:

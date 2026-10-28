@@ -9,15 +9,15 @@ typedef struct {
 } Char;
 
 volatile Char* buffer = (volatile Char*) 0xb8000ULL;
-uint8_t col = 0;
-uint8_t row = 0;
+uint8_t vga_col = 0;
+uint8_t vga_row = 0;
 uint8_t color = WHITE | (BLACK << 4);
 
-void print_newline() {
-    col = 0;
+void print_newline(void) {
+    vga_col = 0;
 
-    if (row < NUM_ROWS - 1) {
-        row++;
+    if (vga_row < NUM_ROWS - 1) {
+        vga_row++;
         return;
     }
 
@@ -28,7 +28,7 @@ void print_newline() {
         }
     }
 
-    clear_row((uint8_t) (NUM_COLS - 1));
+    clear_row((uint8_t) (NUM_ROWS - 1));
 }
 
 void print_clear(void) {
@@ -53,7 +53,7 @@ void print_char(char character) {
         return;
     }
 
-    if (col > NUM_COLS) {
+    if (vga_col >= NUM_COLS) {
         print_newline();
     }
 
@@ -61,8 +61,8 @@ void print_char(char character) {
     ch.character = character;
     ch.color = color;
 
-    buffer[col + (NUM_ROWS * row)] = ch;
-    col++;
+    buffer[vga_col + (NUM_COLS * vga_row)] = ch;
+    vga_col++;
 }
 
 void print_string(char* str) {

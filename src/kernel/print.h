@@ -26,6 +26,7 @@ void clear_row(uint8_t row);
 void print_clear(void);
 void print_char(char ch);
 void print_string(char* str);
+void print_newline(void);
 void print_set_color(uint8_t fg, uint8_t bg);
 
 #endif

@@ -5,6 +5,7 @@
 
 # modules
 .include "src/boot/bprint.s"
+.include "tmp/kernel_sectors.inc"
 .include "src/boot/disk_sector.s"
 
 _start:
@@ -21,7 +22,7 @@ _start:
 
     bprintln oort
 
-    disk_load 50, 0x9000
+    disk_load KERNEL_SECTORS, 0x9000
 
     bprintln loaded
 
