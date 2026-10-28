@@ -3,8 +3,8 @@
 .equ EFLAGS_ID, 1 << 21
 .equ CPUID_EXT_LM, 1 << 29  # if this is set, the cpu supports long mode
 
-.globl _start32
-_start32:
+.globl _start
+_start:
     movw $0x10, %ax
     movw %ax, %ds
     movw %ax, %es

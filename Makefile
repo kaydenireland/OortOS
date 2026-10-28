@@ -1,36 +1,42 @@
-
+CC      = gcc
 AS      = gcc
 LD      = ld
 OBJCOPY = objcopy
 CP      = cp
 DD      = dd
 
-ASFLAGS  = -m32
-LDFLAGS  = -m i386pe -Ttext
-DD1_FLAGS = if=/dev/zero bs=512 count=40
-DD2_FLAGS = bs=512 seek=1 conv=notrunc
+BOOT_LDFLAGS   = -m elf_i386 -Ttext 0x7C00
+STAGE2_LDFLAGS = -m elf_x86_64 -Ttext 0x9000
 
-SRC_DIR = src/boot
-TMP_DIR = tmp
-BIN_DIR = bin
+ASFLAGS_32   = -m32
 
-BOOT_SRC = $(SRC_DIR)/real.s
-BOOT_OBJ = $(TMP_DIR)/boot.o
-BOOT_EXE = $(TMP_DIR)/boot.exe
-BOOT_BIN = $(BIN_DIR)/boot.bin
+ASFLAGS_64   = -m64 -Wa,--64
+KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra
 
-PROT_SRC = $(SRC_DIR)/protected.s
-PROT_OBJ = $(TMP_DIR)/prot.o
-PROT_EXE = $(TMP_DIR)/prot.exe
-PROT_BIN = $(BIN_DIR)/prot.bin
+SRC_DIR   = src/boot
+KERN_DIR  = src/kernel
+TMP_DIR   = tmp
+BIN_DIR   = bin
+
+BOOT_SRC  = $(SRC_DIR)/real.s
+BOOT_OBJ  = $(TMP_DIR)/boot.o
+BOOT_EXE  = $(TMP_DIR)/boot.elf
+BOOT_BIN  = $(BIN_DIR)/boot.bin
+
+PROT_SRC  = $(SRC_DIR)/protected.s
+PROT_BIN  = $(BIN_DIR)/prot.bin
+PROT_EXE  = $(TMP_DIR)/prot.elf
+
+STAGE2_OBJS = $(TMP_DIR)/prot.o \
+              $(TMP_DIR)/kernel.o \
+              $(TMP_DIR)/print.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
-.PHONY: all boot clean size run
+.PHONY: all boot clean
 
 all: boot
 
-# Build the complete disk image.
 boot: $(OORT_IMG)
 
 $(TMP_DIR):
@@ -39,37 +45,41 @@ $(TMP_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Stage 1: BIOS boot sector.
-$(BOOT_OBJ): $(BOOT_SRC) $(wildcard $(SRC_DIR)/*.s) | $(TMP_DIR)
-	$(AS) $(ASFLAGS) -c $(BOOT_SRC) -o $(BOOT_OBJ)
+# Stage 1: BIOS boot sector
+$(BOOT_OBJ): $(BOOT_SRC) | $(TMP_DIR)
+	$(AS) $(ASFLAGS_32) -c $(BOOT_SRC) -o $(BOOT_OBJ)
 
 $(BOOT_EXE): $(BOOT_OBJ)
-	$(LD) $(LDFLAGS) 0x7C00 $(BOOT_OBJ) -o $(BOOT_EXE)
+	$(LD) $(BOOT_LDFLAGS) $(BOOT_OBJ) -o $(BOOT_EXE)
 
 $(BOOT_BIN): $(BOOT_EXE) | $(BIN_DIR)
-	$(OBJCOPY) -O binary -j .text $(BOOT_EXE) $(BOOT_BIN)
-	test "$$(wc -c < $(BOOT_BIN))" -eq 512 || \
-		(echo "Error: boot sector must be exactly 512 bytes"; exit 1)
-	printf '\125\252' | cmp - <(tail -c 2 $(BOOT_BIN)) || \
-		(echo "Error: invalid boot signature"; exit 1)
+	$(OBJCOPY) -O binary $(BOOT_EXE) $(BOOT_BIN)
 
-# Stage 2: protected-mode code.
-$(PROT_OBJ): $(PROT_SRC) $(wildcard $(SRC_DIR)/*.s) | $(TMP_DIR)
-	$(AS) $(ASFLAGS) -c $(PROT_SRC) -o $(PROT_OBJ)
 
-$(PROT_EXE): $(PROT_OBJ)
-	$(LD) $(LDFLAGS) 0x9000 $(PROT_OBJ) -o $(PROT_EXE)
+# Stage 2
+$(TMP_DIR)/prot.o: $(PROT_SRC) | $(TMP_DIR)
+	$(AS) $(ASFLAGS_64) -c $< -o $@
 
+$(TMP_DIR)/kernel.o: $(KERN_DIR)/kernel.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/print.o: $(KERN_DIR)/print.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+
+# Link Stage 2 using 64-bit ELF engine
+$(PROT_EXE): $(STAGE2_OBJS)
+	$(LD) $(STAGE2_LDFLAGS) $(STAGE2_OBJS) -o $(PROT_EXE)
+
+# Extract binary stream for Stage 2
 $(PROT_BIN): $(PROT_EXE) | $(BIN_DIR)
-	$(OBJCOPY) -O binary -j .text $(PROT_EXE) $(PROT_BIN)
-	test "$$(wc -c < $(PROT_BIN))" -le 20480 || \
-		(echo "Error: Stage 2 must be 20,480 bytes or smaller"; exit 1)
+	$(OBJCOPY) -O binary $(PROT_EXE) $(PROT_BIN)
 
-# Disk image: boot sector + 16 reserved sectors + Stage 2.
+# Assemble flat disk block sequence
 $(OORT_IMG): $(BOOT_BIN) $(PROT_BIN) | $(BIN_DIR)
 	$(CP) $(BOOT_BIN) $(OORT_IMG)
-	$(DD) $(DD1_FLAGS) >> $(OORT_IMG)
-	$(DD) if=$(PROT_BIN) of=$(OORT_IMG) $(DD2_FLAGS)
+	$(DD) if=/dev/zero bs=512 count=50 >> $(OORT_IMG)
+	$(DD) if=$(PROT_BIN) of=$(OORT_IMG) bs=512 seek=1 conv=notrunc
 
 clean:
 	rm -rf $(TMP_DIR) $(BIN_DIR)

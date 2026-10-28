@@ -1,5 +1,7 @@
 .code64
 
+.extern start_kernel
+
 .globl _start64
 _start64:
 
@@ -10,14 +12,9 @@ _start64:
     movw %ax, %fs
     movw %ax, %gs
 
-    movabsq $0x9C00, %rsp
-
-    movabsq $0xB8000, %rdi
-    movw $0x0F4C, (%rdi)    # L
-    movw $0x0F4D, 2(%rdi)   # M
-    movw $0x0F20, 4(%rdi)   # space
-    movw $0x0F4F, 6(%rdi)   # O
-    movw $0x0F4B, 8(%rdi)   # K
+    mov $0x90000, %rsp  
+    
+    call start_kernel
 
 
 loop64:

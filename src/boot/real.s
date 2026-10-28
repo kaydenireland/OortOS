@@ -1,4 +1,4 @@
-.section .text
+.section .text.boot
 
 .globl _start
 .code16                 # 16 bit real mode
@@ -21,7 +21,7 @@ _start:
 
     bprintln oort
 
-    disk_load 40, 0x9000
+    disk_load 50, 0x9000
 
     bprintln loaded
 
