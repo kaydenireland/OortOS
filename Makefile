@@ -15,6 +15,7 @@ KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra
 
 SRC_DIR   = src/boot
 KERN_DIR  = src/kernel
+HW_DIR	  = src/hardware
 TMP_DIR   = tmp
 BIN_DIR   = bin
 
@@ -29,7 +30,10 @@ PROT_EXE  = $(TMP_DIR)/prot.elf
 
 STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/kernel.o \
-              $(TMP_DIR)/print.o
+              $(TMP_DIR)/print.o \
+              $(TMP_DIR)/port.o \
+              $(TMP_DIR)/port_s.o \
+              $(TMP_DIR)/rtc.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -66,14 +70,25 @@ $(BOOT_BIN): $(BOOT_EXE) | $(BIN_DIR)
 	$(OBJCOPY) -O binary $(BOOT_EXE) $(BOOT_BIN)
 
 
-# Stage 2
+# Stage 2 - ASM
 $(TMP_DIR)/prot.o: $(PROT_SRC) | $(TMP_DIR)
 	$(AS) $(ASFLAGS_64) -c $< -o $@
+
+$(TMP_DIR)/port_s.o: $(HW_DIR)/port_s.s | $(TMP_DIR)
+	$(AS) $(KERNEL_FLAGS) -c $< -o $@
+
+# Stage 2 - C
 
 $(TMP_DIR)/kernel.o: $(KERN_DIR)/kernel.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/print.o: $(KERN_DIR)/print.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/port.o: $(HW_DIR)/port.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/rtc.o: $(HW_DIR)/rtc.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 

@@ -1,7 +1,7 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include <stdint.h>
+#include "types.h"
 
 enum {
     BLACK = 0,
@@ -22,11 +22,14 @@ enum {
 	WHITE = 15,
 };
 
-void clear_row(uint8_t row);
+void clear_row(u8 row);
 void print_clear(void);
 void print_char(char ch);
 void print_string(char* str);
 void print_newline(void);
-void print_set_color(uint8_t fg, uint8_t bg);
+void print_set_color(u8 fg, u8 bg);
+void print_u64_deci(u64 val);
+void print_u64_hex(u64 val);
+void print_u64_bin(u64 val);
 
 #endif
