@@ -1,36 +1,40 @@
-#ifndef KEY_CODE_HEADER
-#define KEY_CODE_HEADER
+#ifndef KEY_CODE_H
+#define KEY_CODE_H
 
 #include "../kernel/types.h"
 
-#define KEY_CODE_A 0x1E
-#define KEY_CODE_B 0x30
-#define KEY_CODE_C 0x2E
-#define KEY_CODE_D 0x20
-#define KEY_CODE_E 0x12
-#define KEY_CODE_F 0x21
-#define KEY_CODE_G 0x22
-#define KEY_CODE_H 0x23
-#define KEY_CODE_I 0x17
-#define KEY_CODE_J 0x24
-#define KEY_CODE_K 0x25
-#define KEY_CODE_L 0x26
-#define KEY_CODE_M 0x32
-#define KEY_CODE_N 0x31
-#define KEY_CODE_O 0x18
-#define KEY_CODE_P 0x19
-#define KEY_CODE_Q 0x10
-#define KEY_CODE_R 0x13
-#define KEY_CODE_S 0x1F
-#define KEY_CODE_T 0x14
-#define KEY_CODE_U 0x16
-#define KEY_CODE_V 0x2F
-#define KEY_CODE_W 0x11
-#define KEY_CODE_X 0x2D
-#define KEY_CODE_Y 0x15
-#define KEY_CODE_Z 0x2C
-#define KEY_CODE_SPACE 0x39
-#define KEY_CODE_ENTER 0x1C
+// PS/2 Keyboard Keys
+#define KEY_A 0x1E
+#define KEY_B 0x30
+#define KEY_C 0x2E
+#define KEY_D 0x20
+#define KEY_E 0x12
+#define KEY_F 0x21
+#define KEY_G 0x22
+#define KEY_H 0x23
+#define KEY_I 0x17
+#define KEY_J 0x24
+#define KEY_K 0x25
+#define KEY_L 0x26
+#define KEY_M 0x32
+#define KEY_N 0x31
+#define KEY_O 0x18
+#define KEY_P 0x19
+#define KEY_Q 0x10
+#define KEY_R 0x13
+#define KEY_S 0x1F
+#define KEY_T 0x14
+#define KEY_U 0x16
+#define KEY_V 0x2F
+#define KEY_W 0x11
+#define KEY_X 0x2D
+#define KEY_Y 0x15
+#define KEY_Z 0x2C
+#define KEY_SPACE 0x39
+#define KEY_ENTER 0x1C
+#define KEY_BACKSPACE 0x0E
+// #define KEY_TAB 0x0F
+// #define KEY_CAPS_LOCK 0x0E
 
 char key_to_ascii(u16 code);
 

@@ -1,4 +1,5 @@
 #include "print.h"
+#include "../hardware/port.h"
 
 static const u8 NUM_COLS = 80;
 static const u8 NUM_ROWS = 25;
@@ -47,9 +48,23 @@ void clear_row(u8 row) {
     }
 }
 
+void backspace(void) {
+    if (vga_col <= 0) return;
+
+    Char empty;
+    empty.character = ' ';
+    empty.color = color;
+
+    vga_col -= 1;
+    buffer[vga_col + (NUM_COLS * vga_row)] = empty;
+}
+
 void print_char(char character) {
     if (character == '\n') {
         print_newline();
+        return;
+    } else if (character == '\b') {
+        backspace();
         return;
     }
 
@@ -142,4 +157,44 @@ void print_u64_bin(u64 val) {
     for(u8 i = 64; i > 0; i--) {
         print_char(buffer[i - 1]);
     }
+}
+
+void cursor_default(void) {
+    cursor_enable(14, 15);
+}
+
+// 0 - 15: top of char - bottom
+void cursor_enable(u8 start, u8 end) {
+    port_outb(0x3D4, 0x0A);
+    port_outb(0x3D5, (port_inb(0x3D5) & 0xC0) | start);
+
+    port_outb(0x3D4, 0x0B);
+    port_outb(0x3D5, (port_inb(0x3D5) & 0xE0) | end);
+}
+
+void cursor_disable(void) {
+    port_outb(0x3D4, 0x0A);
+    port_outb(0x3D5, 0x20);
+}
+
+void cursor_move(u8 x, u8 y) {
+    u16 pos = x + (NUM_COLS * y);
+
+    port_outb(0x3D4, 0x0F);
+    port_outb(0x3D5, (u8) (pos & 0xFF));
+
+    port_outb(0x3D4, 0x0E);
+    port_outb(0x3D5, (u8) ((pos >> 8) & 0xFF));
+}
+
+u16 cursor_pos(void) {
+    u16 pos = 0;
+
+    port_outb(0x3d4, 0x0F);
+    pos |= port_inb(0x3D5);
+
+    port_outb(0x3D4, 0x0E);
+    pos |= ((u16) port_inb(0x3D5)) << 8;
+
+    return pos;
 }

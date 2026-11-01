@@ -33,4 +33,10 @@ void print_u64_deci(u64 val);
 void print_u64_hex(u64 val);
 void print_u64_bin(u64 val);
 
+void cursor_default(void);
+void cursor_enable(u8 start, u8 end);
+void cursor_disable(void);
+void cursor_move(u8 x, u8 y);
+u16 cursor_pos(void);
+
 #endif

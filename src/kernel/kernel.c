@@ -12,6 +12,7 @@ void handle_input(struct KeyboardEvent event) {
 }
 
 void start_kernel(void) {
+    cursor_disable();
 
     print_set_color(YELLOW, BLACK);
     print_string("Welcome to Oort OS!\n\n");
