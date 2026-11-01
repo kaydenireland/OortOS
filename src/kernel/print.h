@@ -27,6 +27,7 @@ void print_clear(void);
 void print_char(char ch);
 void print_string(char* str);
 void print_newline(void);
+void print_reset_color(void);
 void print_set_color(u8 fg, u8 bg);
 void print_u64_deci(u64 val);
 void print_u64_hex(u64 val);

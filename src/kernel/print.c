@@ -76,6 +76,10 @@ void print_string(char* str) {
     }
 }
 
+void print_reset_color(void) {
+    print_set_color(WHITE, BLACK);
+}
+
 void print_set_color(u8 fg, u8 bg) {
     color = fg + (bg << 4);
 }

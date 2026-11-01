@@ -17,7 +17,7 @@ void rtc_wait(void) {
     while(rtc_read_register(RTC_REGISTER_STATUS_A) &RTC_UPDATE_IN_PROGRESS) { }
 }
 
-u8 rtc_is_bcd() {
+u8 rtc_is_bcd(void) {
     return !(rtc_read_register(RTC_REGISTER_STATUS_B) &RTC_DATA_MODE);
 } 
 

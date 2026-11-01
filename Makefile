@@ -11,7 +11,7 @@ STAGE2_LDFLAGS = -m elf_x86_64 -Ttext 0x9000
 ASFLAGS_32   = -m32
 
 ASFLAGS_64   = -m64 -Wa,--64
-KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra
+KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra -mno-red-zone
 
 SRC_DIR   = src/boot
 KERN_DIR  = src/kernel
@@ -33,7 +33,13 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/print.o \
               $(TMP_DIR)/port.o \
               $(TMP_DIR)/port_s.o \
-              $(TMP_DIR)/rtc.o
+              $(TMP_DIR)/rtc.o \
+              $(TMP_DIR)/idt.o \
+              $(TMP_DIR)/idt_s.o \
+              $(TMP_DIR)/keyboard.o \
+              $(TMP_DIR)/key_code.o \
+              $(TMP_DIR)/pic.o \
+              $(TMP_DIR)/ps2.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -77,6 +83,9 @@ $(TMP_DIR)/prot.o: $(PROT_SRC) | $(TMP_DIR)
 $(TMP_DIR)/port_s.o: $(HW_DIR)/port_s.s | $(TMP_DIR)
 	$(AS) $(KERNEL_FLAGS) -c $< -o $@
 
+$(TMP_DIR)/idt_s.o: $(HW_DIR)/idt_s.s | $(TMP_DIR)
+	$(AS) $(KERNEL_FLAGS) -c $< -o $@
+
 # Stage 2 - C
 
 $(TMP_DIR)/kernel.o: $(KERN_DIR)/kernel.c | $(TMP_DIR)
@@ -89,6 +98,21 @@ $(TMP_DIR)/port.o: $(HW_DIR)/port.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/rtc.o: $(HW_DIR)/rtc.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/idt.o: $(HW_DIR)/idt.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/keyboard.o: $(HW_DIR)/keyboard.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/key_code.o: $(HW_DIR)/key_code.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/pic.o: $(HW_DIR)/pic.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/ps2.o: $(HW_DIR)/ps2.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 
