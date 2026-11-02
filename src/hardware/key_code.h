@@ -4,6 +4,16 @@
 #include "../kernel/types.h"
 
 // PS/2 Keyboard Keys
+#define KEY_0 0x0B
+#define KEY_1 0x02
+#define KEY_2 0x03
+#define KEY_3 0x04
+#define KEY_4 0x05
+#define KEY_5 0x06
+#define KEY_6 0x07
+#define KEY_7 0x08
+#define KEY_8 0x09
+#define KEY_9 0x0A
 #define KEY_A 0x1E
 #define KEY_B 0x30
 #define KEY_C 0x2E
@@ -30,6 +40,8 @@
 #define KEY_X 0x2D
 #define KEY_Y 0x15
 #define KEY_Z 0x2C
+#define KEY_COMMA 0x33
+#define KEY_PERIOD 0x34
 #define KEY_SPACE 0x39
 #define KEY_ENTER 0x1C
 #define KEY_BACKSPACE 0x0E

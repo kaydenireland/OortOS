@@ -1,5 +1,6 @@
 #include "print.h"
 #include "../hardware/port.h"
+#include <stdarg.h>
 
 static const u8 NUM_COLS = 80;
 static const u8 NUM_ROWS = 25;
@@ -14,7 +15,7 @@ u8 vga_col = 0;
 u8 vga_row = 0;
 u8 color = WHITE | (BLACK << 4);
 
-void print_newline(void) {
+void putnl(void) {
     vga_col = 0;
 
     if (vga_row < NUM_ROWS - 1) {
@@ -44,7 +45,7 @@ void clear_row(u8 row) {
     empty.color = color;
 
     for(u8 col = 0; col < NUM_COLS; col++) {
-        buffer[col + (NUM_ROWS * row)] = empty;
+        buffer[col + (NUM_COLS * row)] = empty;
     }
 }
 
@@ -59,9 +60,9 @@ void backspace(void) {
     buffer[vga_col + (NUM_COLS * vga_row)] = empty;
 }
 
-void print_char(char character) {
+void putc(char character) {
     if (character == '\n') {
-        print_newline();
+        putnl();
         return;
     } else if (character == '\b') {
         backspace();
@@ -69,7 +70,7 @@ void print_char(char character) {
     }
 
     if (vga_col >= NUM_COLS) {
-        print_newline();
+        putnl();
     }
 
     Char ch;
@@ -80,14 +81,14 @@ void print_char(char character) {
     vga_col++;
 }
 
-void print_string(char* str) {
+void puts(const char* str) {
     for(u8 i = 0; 1; i++) {
         char character = (u8) str[i];
 
         if (character == '\0') {
             return;
         }
-        print_char(character);
+        putc(character);
     }
 }
 
@@ -101,7 +102,7 @@ void print_set_color(u8 fg, u8 bg) {
 
 void print_u64_deci(u64 val) {
     if (val == 0) {
-        print_char('0');
+        putc('0');
         return;
     }
 
@@ -114,14 +115,34 @@ void print_u64_deci(u64 val) {
     }
 
     while (i-- > 0) {
-        print_char(buffer[i]);
+        putc(buffer[i]);
     }
 
 }
 
+void print_u64_oct(u64 val) {
+    if (val == 0) {
+        putc('0');
+        return;
+    }
+
+    char buffer[22];
+    int i = 0;
+
+    while (val > 0) {
+        u8 digit = val & 0x07;
+        buffer[i++] = digit + '0';
+        val >>= 3;
+    }
+
+    while (i-- > 0) {
+        putc(buffer[i]);
+    }
+}
+
 void print_u64_hex(u64 val) {
     if (val == 0) {
-        print_char('0');
+        putc('0');
         return;
     }
 
@@ -141,7 +162,7 @@ void print_u64_hex(u64 val) {
     }
 
     while (i-- > 0) {
-        print_char(buffer[i]);
+        putc(buffer[i]);
     }
 
 }
@@ -155,8 +176,69 @@ void print_u64_bin(u64 val) {
     }
 
     for(u8 i = 64; i > 0; i--) {
-        print_char(buffer[i - 1]);
+        putc(buffer[i - 1]);
     }
+}
+
+void printf(char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    while (*fmt) {
+        if (*fmt == '%') {
+            fmt++;
+
+            switch (*fmt) {
+                case 'c': {
+                    char c = (char) va_arg(args, int);
+                    putc(c);
+                    break;
+                }
+                case 's': {
+                    char* str = va_arg(args, char*);
+                    puts(str);
+                    break;
+                }
+                case 'u': {
+                    u32 val = va_arg(args, u32);
+                    print_u64_deci(val);
+                    break;
+                }
+                case 'x': {
+                    u32 val = va_arg(args, u32);
+                    print_u64_hex(val);
+                    break;
+                }
+                case 'o': {
+                    u32 val = va_arg(args, u32);
+                    print_u64_oct(val);
+                    break;
+                }
+                case 'p':   {
+                    u64 val = (u64)va_arg(args, void*);
+
+                    puts("0x");
+                    print_u64_hex(val);
+                    break;
+                }
+                case '%': {
+                    putc('%');
+                    break;
+                }
+                default: {
+                    putc('%');
+                    putc(*fmt);
+                    break;
+                }
+            }
+        } else {
+            putc(*fmt);
+        }
+        
+        fmt++;
+    }
+    
+    va_end(args);
 }
 
 void cursor_default(void) {
