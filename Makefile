@@ -30,7 +30,8 @@ PROT_EXE  = $(TMP_DIR)/prot.elf
 
 STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/kernel.o \
-              $(TMP_DIR)/print.o \
+              $(TMP_DIR)/debug.o \
+              $(TMP_DIR)/stdio.o \
               $(TMP_DIR)/port.o \
               $(TMP_DIR)/port_s.o \
               $(TMP_DIR)/rtc.o \
@@ -91,7 +92,10 @@ $(TMP_DIR)/idt_s.o: $(HW_DIR)/idt_s.s | $(TMP_DIR)
 $(TMP_DIR)/kernel.o: $(KERN_DIR)/kernel.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/print.o: $(KERN_DIR)/print.c | $(TMP_DIR)
+$(TMP_DIR)/debug.o: $(KERN_DIR)/debug.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/stdio.o: $(KERN_DIR)/stdio.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/port.o: $(HW_DIR)/port.c | $(TMP_DIR)
@@ -141,4 +145,4 @@ size: $(OORT_IMG)
 	wc -c $(OORT_IMG)
 
 run: $(OORT_IMG)
-	qemu-system-x86_64 -cpu qemu64 -drive format=raw,file=$(OORT_IMG)
+	qemu-system-x86_64 -cpu qemu64 -debugcon file:log/debug.txt -drive format=raw,file=$(OORT_IMG) -D log/qemu.log -d cpu_reset,guest_errors,unimp

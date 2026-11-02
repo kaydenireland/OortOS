@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "pic.h"
 #include "gdt.h"
+#include "../kernel/debug.h"
 
 #define IDT_IRQ0_TIMER 0x20
 #define IDT_IRQ1_KEYBOARD 0x21
@@ -61,6 +62,7 @@ void idt_keyboard_handler(void) {
 }
 
 void idt_init(void) {
+    dbg_putln("Initializng Interrupt Descriptor Table");
     pic_remap();
 
     idt_ptr.limit = (sizeof(struct IdtEntry) * 256) - 1;

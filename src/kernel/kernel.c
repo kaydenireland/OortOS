@@ -1,5 +1,6 @@
 #include "kernel.h"
-#include "print.h"
+#include "stdio.h"
+#include "debug.h"
 #include "../hardware/rtc.h"
 #include "../hardware/keyboard.h"
 #include "../hardware/key_code.h"
@@ -12,12 +13,15 @@ void handle_input(struct KeyboardEvent event) {
 }
 
 void start_kernel(void) {
+    dbg_putln("Kernel Loaded in Long Mode");
+
     cursor_disable();
 
     print_set_color(YELLOW, BLACK);
     puts("Welcome to Oort OS!\n\n");
     print_reset_color();
     puts("\"Every atom in your body came from a star that exploded. And, the atoms in your left hand probably came from a different star than your right hand. It really is the most poetic thing I know about physics: You are all stardust.\"\n");
+    print_set_color(MAGENTA, BLACK);
     puts("     - Lawrence M. Krauss\n\n");
 
     keyboard_set_handler(handle_input);

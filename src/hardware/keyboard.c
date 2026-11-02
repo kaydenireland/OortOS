@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "idt.h"
 #include "ps2.h"
+#include "../kernel/debug.h"
 
 #define EXTENDED_SCAN_CODE 0xE0
 
@@ -39,6 +40,7 @@ void keyboard_handler(void) {
 }
 
 void keyboard_init(void) {
+    dbg_putln("Initializing Keyboard");
     idt_set_keyboard_handler(keyboard_handler);
     idt_init();
 }

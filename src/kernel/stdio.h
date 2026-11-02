@@ -1,5 +1,5 @@
-#ifndef PRINT_H
-#define PRINT_H
+#ifndef STDIO_H
+#define STDIO_H
 
 #include "types.h"
 
