@@ -1,7 +1,7 @@
 #ifndef KEY_CODE_H
 #define KEY_CODE_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 // PS/2 Keyboard Keys
 #define KEY_0 0x0B

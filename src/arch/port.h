@@ -1,7 +1,7 @@
 #ifndef PORT_H
 #define PORT_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 u8 port_inb(u16 port_id);   // get input from given port
 void port_outb(u16 port_id, u8 data);   // send output to port

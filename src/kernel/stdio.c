@@ -252,36 +252,36 @@ void cursor_default(void) {
 
 // 0 - 15: top of char - bottom
 void cursor_enable(u8 start, u8 end) {
-    port_outb(0x3D4, 0x0A);
-    port_outb(0x3D5, (port_inb(0x3D5) & 0xC0) | start);
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | start);
 
-    port_outb(0x3D4, 0x0B);
-    port_outb(0x3D5, (port_inb(0x3D5) & 0xE0) | end);
+    outb(0x3D4, 0x0B);
+    outb(0x3D5, (inb(0x3D5) & 0xE0) | end);
 }
 
 void cursor_disable(void) {
-    port_outb(0x3D4, 0x0A);
-    port_outb(0x3D5, 0x20);
+    outb(0x3D4, 0x0A);
+    outb(0x3D5, 0x20);
 }
 
 void cursor_move(u8 x, u8 y) {
     u16 pos = x + (NUM_COLS * y);
 
-    port_outb(0x3D4, 0x0F);
-    port_outb(0x3D5, (u8) (pos & 0xFF));
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (u8) (pos & 0xFF));
 
-    port_outb(0x3D4, 0x0E);
-    port_outb(0x3D5, (u8) ((pos >> 8) & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (u8) ((pos >> 8) & 0xFF));
 }
 
 u16 cursor_pos(void) {
     u16 pos = 0;
 
-    port_outb(0x3d4, 0x0F);
-    pos |= port_inb(0x3D5);
+    outb(0x3d4, 0x0F);
+    pos |= inb(0x3D5);
 
-    port_outb(0x3D4, 0x0E);
-    pos |= ((u16) port_inb(0x3D5)) << 8;
+    outb(0x3D4, 0x0E);
+    pos |= ((u16) inb(0x3D5)) << 8;
 
     return pos;
 }

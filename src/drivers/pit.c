@@ -10,7 +10,7 @@ void pit_init(u32 frequency) {
 
     u16 divisor = PIT_FREQUENCY / frequency;
 
-    port_outb(PIT_COMMAND_PORT, 0x34);
-    port_outb(PIT_DATA_PORT, (u8)(divisor & 0xFF)); // send low byte first
-    port_outb(PIT_DATA_PORT, (u8)(divisor >> 8)); // send high byte second
+    outb(PIT_COMMAND_PORT, 0x34);
+    outb(PIT_DATA_PORT, (u8)(divisor & 0xFF)); // send low byte first
+    outb(PIT_DATA_PORT, (u8)(divisor >> 8)); // send high byte second
 }

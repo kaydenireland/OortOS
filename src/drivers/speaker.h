@@ -1,7 +1,7 @@
 #ifndef SPEAKER_H
 #define SPEAKER_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 enum {
     C4 = 262,

@@ -1,7 +1,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 void timer_init(void);
 void timer_setf(u32 frequency);

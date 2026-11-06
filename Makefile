@@ -45,7 +45,8 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/ps2.o \
               $(TMP_DIR)/pit.o \
               $(TMP_DIR)/speaker.o \
-              $(TMP_DIR)/timer.o
+              $(TMP_DIR)/timer.o \
+              $(TMP_DIR)/random.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -131,6 +132,9 @@ $(TMP_DIR)/speaker.o: $(DRIVE_DIR)/speaker.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/timer.o: $(KERN_DIR)/timer.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/random.o: $(KERN_DIR)/random.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 

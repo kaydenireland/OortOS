@@ -1,7 +1,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 enum KeyboardEventType {
     PRESSED = 0,

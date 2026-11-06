@@ -1,7 +1,7 @@
 #ifndef RTC_H
 #define RTC_H
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 // Real Time Clock
 

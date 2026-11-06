@@ -1,13 +1,14 @@
 #include "kernel.h"
 #include "stdio.h"
 #include "../util/debug.h"
-#include "../util/types.h"
+#include "../util/numbers.h"
 #include "../arch/idt.h"
 #include "../drivers/rtc.h"
 #include "../drivers/keyboard.h"
 #include "../drivers/key_code.h"
 #include "../drivers/speaker.h"
 #include "timer.h"
+#include "random.h"
 
 void handle_input(struct KeyboardEvent event) {
     if (event.type == PRESSED) {
@@ -57,12 +58,12 @@ void kernel_start(void) {
 
     u64 start_tick = timer_ticks();
     while(1) {
-        timer_sleep(3);
+        timer_sleep((u8) rand_u32());
         u64 current_tick = timer_ticks();
 
         u64 dif = current_tick - start_tick;
         if (dif >= 1000) {
-            printf("Uptime: %u s\n", timer_uptime());
+            printf("\nUptime: %u s\n", timer_uptime());
             printf("Elapsed: %u ms\n", dif);
             start_tick = current_tick;
         }

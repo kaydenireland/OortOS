@@ -1,11 +1,11 @@
 #include "debug.h"
 #include <stdarg.h>
 
-#include "../util/types.h"
+#include "../util/numbers.h"
 
 
 void dbg_putc(char c) {
-    port_outb(0xE9, c);
+    outb(0xE9, c);
 }
 
 void dbg_puts(char* str) {

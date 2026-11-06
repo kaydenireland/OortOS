@@ -22,18 +22,18 @@ void play_sound(u32 frequency) {
         return;
     }
 
-    port_outb(PIT_COMMAND_PORT, 0xB6);
-    port_outb(PIT_AUDIO_PORT, (u8) divisor);
-    port_outb(PIT_AUDIO_PORT, (u8) (divisor >> 8));
+    outb(PIT_COMMAND_PORT, 0xB6);
+    outb(PIT_AUDIO_PORT, (u8) divisor);
+    outb(PIT_AUDIO_PORT, (u8) (divisor >> 8));
 
     // play sound using pc speaker
-    tmp = port_inb(0x61);
-    port_outb(SPEAKER_PORT, tmp | 3);
+    tmp = inb(0x61);
+    outb(SPEAKER_PORT, tmp | 3);
 }
 
 void stop_sound(void) {
-    u8 tmp = port_inb(SPEAKER_PORT) & 0xFC;
-    port_outb(SPEAKER_PORT, tmp);
+    u8 tmp = inb(SPEAKER_PORT) & 0xFC;
+    outb(SPEAKER_PORT, tmp);
 }
 
 void beep(u32 frequency, u32 length) {

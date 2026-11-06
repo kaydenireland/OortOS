@@ -11,8 +11,8 @@
 #define RTC_DATA_MODE 0x04
 
 u8 rtc_read_register(u8 reg) {
-    port_outb(RTC_COMMAND_PORT, reg);
-    return port_inb(RTC_DATA_PORT);
+    outb(RTC_COMMAND_PORT, reg);
+    return inb(RTC_DATA_PORT);
 }
 
 void rtc_wait(void) {

@@ -40,5 +40,5 @@ u64 timer_uptime(void) {
 }
 
 u64 timer_milliseconds(void) {
-    return frequency != 0 ? (ticks * 100) / frequency : 0;
+    return frequency != 0 ? (ticks * 1000) / frequency : 0;
 }
