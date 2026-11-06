@@ -1,7 +1,7 @@
 #include "idt.h"
-#include "pic.h"
+#include "../drivers/pic.h"
 #include "gdt.h"
-#include "../kernel/debug.h"
+#include "../util/debug.h"
 
 #define IDT_IRQ0_TIMER 0x20
 #define IDT_IRQ1_KEYBOARD 0x21

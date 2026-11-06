@@ -1,5 +1,5 @@
 #include "stdio.h"
-#include "../hardware/port.h"
+#include "../arch/port.h"
 #include <stdarg.h>
 
 static const u8 NUM_COLS = 80;

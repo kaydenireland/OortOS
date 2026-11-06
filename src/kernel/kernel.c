@@ -1,11 +1,12 @@
 #include "kernel.h"
 #include "stdio.h"
-#include "debug.h"
-#include "../hardware/idt.h"
-#include "../hardware/rtc.h"
-#include "../hardware/keyboard.h"
-#include "../hardware/key_code.h"
-#include "../hardware/pit.h"
+#include "../util/debug.h"
+#include "../util/types.h"
+#include "../arch/idt.h"
+#include "../drivers/rtc.h"
+#include "../drivers/keyboard.h"
+#include "../drivers/key_code.h"
+#include "../drivers/pit.h"
 
 void handle_input(struct KeyboardEvent event) {
     if (event.type == PRESSED) {

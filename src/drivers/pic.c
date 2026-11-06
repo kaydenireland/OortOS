@@ -1,7 +1,7 @@
 #include "pic.h"
 
-#include "../kernel/types.h"
-#include "port.h"
+#include "../util/types.h"
+#include "../arch/port.h"
 
 #define PIC1_COMMAND_PORT 0x20
 #define PIC1_DATA_PORT 0x21

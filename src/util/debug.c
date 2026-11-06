@@ -1,7 +1,7 @@
 #include "debug.h"
 #include <stdarg.h>
 
-#include "types.h"
+#include "../util/types.h"
 
 
 void dbg_putc(char c) {

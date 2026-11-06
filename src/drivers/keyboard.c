@@ -1,7 +1,7 @@
 #include "keyboard.h"
-#include "idt.h"
+#include "../arch/idt.h"
 #include "ps2.h"
-#include "../kernel/debug.h"
+#include "../util/debug.h"
 
 #define EXTENDED_SCAN_CODE 0xE0
 

@@ -1,7 +1,7 @@
 #ifndef STDIO_H
 #define STDIO_H
 
-#include "types.h"
+#include "../util/types.h"
 
 enum {
     BLACK = 0,

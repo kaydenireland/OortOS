@@ -1,6 +1,6 @@
 #include "ps2.h"
 
-#include "port.h"
+#include "../arch/port.h"
 
 #define PS2_DATA_PORT 0x60
 

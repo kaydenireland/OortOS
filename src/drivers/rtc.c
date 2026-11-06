@@ -1,4 +1,6 @@
-#include "port.h"
+#include "rtc.h"
+
+#include "../arch/port.h"
 
 #define RTC_COMMAND_PORT 0x70
 #define RTC_DATA_PORT 0x71

@@ -1,7 +1,7 @@
 #ifndef IDT_H
 #define IDT_H
 
-#include "../kernel/types.h"
+#include "../util/types.h"
 
 void idt_init(void);
 void idt_set_pit_handler(void (*handler)());

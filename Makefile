@@ -13,18 +13,20 @@ ASFLAGS_32   = -m32
 ASFLAGS_64   = -m64 -Wa,--64
 KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra -mno-red-zone
 
-SRC_DIR   = src/boot
+BOOT_DIR   = src/boot
+UTIL_DIR  = src/util
 KERN_DIR  = src/kernel
-HW_DIR	  = src/hardware
+ARCH_DIR  = src/arch
+DRIVE_DIR = src/drivers
 TMP_DIR   = tmp
 BIN_DIR   = bin
 
-BOOT_SRC  = $(SRC_DIR)/real.s
+BOOT_SRC  = $(BOOT_DIR)/real.s
 BOOT_OBJ  = $(TMP_DIR)/boot.o
 BOOT_EXE  = $(TMP_DIR)/boot.elf
 BOOT_BIN  = $(BIN_DIR)/boot.bin
 
-PROT_SRC  = $(SRC_DIR)/protected.s
+PROT_SRC  = $(BOOT_DIR)/protected.s
 PROT_BIN  = $(BIN_DIR)/prot.bin
 PROT_EXE  = $(TMP_DIR)/prot.elf
 
@@ -82,10 +84,10 @@ $(BOOT_BIN): $(BOOT_EXE) | $(BIN_DIR)
 $(TMP_DIR)/prot.o: $(PROT_SRC) | $(TMP_DIR)
 	$(AS) $(ASFLAGS_64) -c $< -o $@
 
-$(TMP_DIR)/port_s.o: $(HW_DIR)/port_s.s | $(TMP_DIR)
+$(TMP_DIR)/port_s.o: $(ARCH_DIR)/port_s.s | $(TMP_DIR)
 	$(AS) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/idt_s.o: $(HW_DIR)/idt_s.s | $(TMP_DIR)
+$(TMP_DIR)/idt_s.o: $(ARCH_DIR)/idt_s.s | $(TMP_DIR)
 	$(AS) $(KERNEL_FLAGS) -c $< -o $@
 
 # Stage 2 - C
@@ -93,34 +95,34 @@ $(TMP_DIR)/idt_s.o: $(HW_DIR)/idt_s.s | $(TMP_DIR)
 $(TMP_DIR)/kernel.o: $(KERN_DIR)/kernel.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/debug.o: $(KERN_DIR)/debug.c | $(TMP_DIR)
+$(TMP_DIR)/debug.o: $(UTIL_DIR)/debug.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/stdio.o: $(KERN_DIR)/stdio.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/port.o: $(HW_DIR)/port.c | $(TMP_DIR)
+$(TMP_DIR)/port.o: $(ARCH_DIR)/port.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/rtc.o: $(HW_DIR)/rtc.c | $(TMP_DIR)
+$(TMP_DIR)/rtc.o: $(DRIVE_DIR)/rtc.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/idt.o: $(HW_DIR)/idt.c | $(TMP_DIR)
+$(TMP_DIR)/idt.o: $(ARCH_DIR)/idt.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/keyboard.o: $(HW_DIR)/keyboard.c | $(TMP_DIR)
+$(TMP_DIR)/keyboard.o: $(DRIVE_DIR)/keyboard.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/key_code.o: $(HW_DIR)/key_code.c | $(TMP_DIR)
+$(TMP_DIR)/key_code.o: $(DRIVE_DIR)/key_code.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/pic.o: $(HW_DIR)/pic.c | $(TMP_DIR)
+$(TMP_DIR)/pic.o: $(DRIVE_DIR)/pic.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/ps2.o: $(HW_DIR)/ps2.c | $(TMP_DIR)
+$(TMP_DIR)/ps2.o: $(DRIVE_DIR)/ps2.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/pit.o: $(HW_DIR)/pit.c | $(TMP_DIR)
+$(TMP_DIR)/pit.o: $(DRIVE_DIR)/pit.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 

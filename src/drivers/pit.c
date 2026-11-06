@@ -1,7 +1,7 @@
 #include "pit.h"
 
-#include "../kernel/debug.h"
-#include "port.h"
+#include "../util/debug.h"
+#include "../arch/port.h"
 
 #define PIT_DATA_PORT 0x40  // Channel 0
 #define PIT_COMMAND_PORT 0x43
