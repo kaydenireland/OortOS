@@ -45,8 +45,8 @@
 #define KEY_SPACE 0x39
 #define KEY_ENTER 0x1C
 #define KEY_BACKSPACE 0x0E
-// #define KEY_TAB 0x0F
-// #define KEY_CAPS_LOCK 0x0E
+#define KEY_TAB 0x0F
+#define KEY_CAPS_LOCK 0x3A
 
 char key_to_ascii(u16 code);
 

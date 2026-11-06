@@ -3,6 +3,7 @@
 
 #include "../util/types.h"
 
-void start_kernel(void);
+void kernel_start(void);
+void kernel_init(void);
 
 #endif

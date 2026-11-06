@@ -1,6 +1,6 @@
 .code64
 
-.extern start_kernel
+.extern kernel_start
 
 .globl _start64
 _start64:
@@ -14,7 +14,7 @@ _start64:
 
     mov $0x90000, %rsp  
     
-    call start_kernel
+    call kernel_start
 
 
 loop64:

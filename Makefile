@@ -43,7 +43,9 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/key_code.o \
               $(TMP_DIR)/pic.o \
               $(TMP_DIR)/ps2.o \
-              $(TMP_DIR)/pit.o
+              $(TMP_DIR)/pit.o \
+              $(TMP_DIR)/speaker.o \
+              $(TMP_DIR)/timer.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -125,6 +127,12 @@ $(TMP_DIR)/ps2.o: $(DRIVE_DIR)/ps2.c | $(TMP_DIR)
 $(TMP_DIR)/pit.o: $(DRIVE_DIR)/pit.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
+$(TMP_DIR)/speaker.o: $(DRIVE_DIR)/speaker.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/timer.o: $(KERN_DIR)/timer.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
 
 # Link Stage 2 using 64-bit ELF engine
 $(PROT_EXE): $(STAGE2_OBJS)
@@ -151,4 +159,11 @@ size: $(OORT_IMG)
 	wc -c $(OORT_IMG)
 
 run: $(OORT_IMG)
-	qemu-system-x86_64 -cpu qemu64 -debugcon file:log/debug.txt -drive format=raw,file=$(OORT_IMG) -D log/qemu.log -d cpu_reset,guest_errors,unimp
+	qemu-system-x86_64 \
+		-cpu qemu64 \
+		-debugcon file:log/debug.txt \
+		-drive format=raw,file=$(OORT_IMG) \
+		-D log/qemu.log \
+		-d cpu_reset,guest_errors,unimp \
+		-audiodev dsound,id=audio0 \
+		-machine pc,pcspk-audiodev=audio0

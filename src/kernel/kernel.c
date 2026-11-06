@@ -6,17 +6,29 @@
 #include "../drivers/rtc.h"
 #include "../drivers/keyboard.h"
 #include "../drivers/key_code.h"
-#include "../drivers/pit.h"
+#include "../drivers/speaker.h"
+#include "timer.h"
 
 void handle_input(struct KeyboardEvent event) {
     if (event.type == PRESSED) {
         print_set_color(CYAN, BLACK);
-        putc(key_to_ascii(event.code));
+        putc(key_to_ascii(event.code));        
     } else if (event.type == RELEASED) {}
 }
 
-void start_kernel(void) {
+void kernel_init(void) {
+    dbg_putln("Initializing Kernel");
+
+    idt_set_pit_handler(timer_tick);
+    keyboard_set_handler(handle_input);
+
+    timer_init();
+    keyboard_init();
+}
+
+void kernel_start(void) {
     dbg_putln("Kernel Loaded in Long Mode");
+    kernel_init();
 
     cursor_disable();
 
@@ -27,14 +39,9 @@ void start_kernel(void) {
     print_set_color(MAGENTA, BLACK);
     puts("     - Lawrence M. Krauss\n\n");
 
-    idt_set_pit_handler(pit_handler);
-    keyboard_set_handler(handle_input);
-
-    pit_init(1000);
-    keyboard_init();
+    beep(G4, 50);
 
     u8 previous_seconds = 0;
-
     for(u8 i = 0; i < 3;) {
         u8 seconds = rtc_seconds();
 
@@ -48,14 +55,16 @@ void start_kernel(void) {
     }
     puts("  - Seconds loop disabled.\n");
 
-    u64 last_tick = 0;
-
+    u64 start_tick = timer_ticks();
     while(1) {
-        u64 current_tick = pit_ticks();
+        timer_sleep(3);
+        u64 current_tick = timer_ticks();
 
-        if (current_tick - last_tick >= 1000) {
-            last_tick = current_tick;
-            putln("One second elapsed");
+        u64 dif = current_tick - start_tick;
+        if (dif >= 1000) {
+            printf("Uptime: %u s\n", timer_uptime());
+            printf("Elapsed: %u ms\n", dif);
+            start_tick = current_tick;
         }
     }
 }
