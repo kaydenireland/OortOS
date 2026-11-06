@@ -40,7 +40,8 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/keyboard.o \
               $(TMP_DIR)/key_code.o \
               $(TMP_DIR)/pic.o \
-              $(TMP_DIR)/ps2.o
+              $(TMP_DIR)/ps2.o \
+              $(TMP_DIR)/pit.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -117,6 +118,9 @@ $(TMP_DIR)/pic.o: $(HW_DIR)/pic.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 $(TMP_DIR)/ps2.o: $(HW_DIR)/ps2.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+$(TMP_DIR)/pit.o: $(HW_DIR)/pit.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
 

@@ -1,6 +1,7 @@
+.extern idt_pit_handler
 .extern idt_keyboard_handler
-.globl idt_load
 
+.globl idt_load
 idt_load:
     lidt (%rdi)
     ret
@@ -55,4 +56,5 @@ idt_load:
 		iretq
 .endm
 
+wrapped_handler idt_pit_handler
 wrapped_handler idt_keyboard_handler

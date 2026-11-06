@@ -68,6 +68,7 @@ void pic_remap(void) {
 	// Unmask desired interrupts
 	u8 mask_master = port_inb(PIC1_DATA_PORT);
 	u8 mask_slave = port_inb(PIC2_DATA_PORT);
+	mask_master &= ~(1 << IRQ0_TIMER);
 	mask_master &= ~(1 << IRQ1_KEYBOARD);
 	port_outb(PIC1_DATA_PORT, mask_master);
 	port_wait();

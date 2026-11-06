@@ -27,6 +27,7 @@ void print_clear(void);
 
 void putc(char ch);
 void puts(const char* str);
+void putln(const char* str);
 void putnl(void);
 void printf(char* fmt, ...);
 

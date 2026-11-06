@@ -1,9 +1,11 @@
 #include "kernel.h"
 #include "stdio.h"
 #include "debug.h"
+#include "../hardware/idt.h"
 #include "../hardware/rtc.h"
 #include "../hardware/keyboard.h"
 #include "../hardware/key_code.h"
+#include "../hardware/pit.h"
 
 void handle_input(struct KeyboardEvent event) {
     if (event.type == PRESSED) {
@@ -24,7 +26,10 @@ void start_kernel(void) {
     print_set_color(MAGENTA, BLACK);
     puts("     - Lawrence M. Krauss\n\n");
 
+    idt_set_pit_handler(pit_handler);
     keyboard_set_handler(handle_input);
+
+    pit_init(1000);
     keyboard_init();
 
     u8 previous_seconds = 0;
@@ -42,5 +47,14 @@ void start_kernel(void) {
     }
     puts("  - Seconds loop disabled.\n");
 
-    while(1);
+    u64 last_tick = 0;
+
+    while(1) {
+        u64 current_tick = pit_ticks();
+
+        if (current_tick - last_tick >= 1000) {
+            last_tick = current_tick;
+            putln("One second elapsed");
+        }
+    }
 }

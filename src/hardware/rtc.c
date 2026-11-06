@@ -1,7 +1,7 @@
 #include "port.h"
 
-#define PORT_RTC_COMMAND 0x70
-#define PORT_RTC_DATA 0x71
+#define RTC_COMMAND_PORT 0x70
+#define RTC_DATA_PORT 0x71
 #define RTC_REGISTER_SECONDS 0x00
 #define RTC_REGISTER_STATUS_A 0x0A
 #define RTC_REGISTER_STATUS_B 0x0B
@@ -9,8 +9,8 @@
 #define RTC_DATA_MODE 0x04
 
 u8 rtc_read_register(u8 reg) {
-    port_outb(PORT_RTC_COMMAND, reg);
-    return port_inb(PORT_RTC_DATA);
+    port_outb(RTC_COMMAND_PORT, reg);
+    return port_inb(RTC_DATA_PORT);
 }
 
 void rtc_wait(void) {

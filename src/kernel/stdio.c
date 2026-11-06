@@ -92,6 +92,11 @@ void puts(const char* str) {
     }
 }
 
+void putln(const char* str) {
+    puts(str);
+    putnl();
+}
+
 void print_reset_color(void) {
     print_set_color(WHITE, BLACK);
 }
