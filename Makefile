@@ -1,5 +1,6 @@
 CC      = gcc
 AS      = gcc
+RUSTC	= rustc
 LD      = ld
 OBJCOPY = objcopy
 CP      = cp
@@ -13,11 +14,14 @@ ASFLAGS_32   = -m32
 ASFLAGS_64   = -m64 -Wa,--64
 KERNEL_FLAGS = -m64 -ffreestanding -mno-red-zone -O2 -Wall -Wextra -mno-red-zone
 
+RUST_FLAGS   = --edition=2021 --crate-type lib --emit obj --target x86_64-unknown-none -C panic=abort -C opt-level=0
+
 BOOT_DIR   = src/boot
 UTIL_DIR  = src/util
 KERN_DIR  = src/kernel
 ARCH_DIR  = src/arch
 DRIVE_DIR = src/drivers
+RUST_DIR  = src/rust
 TMP_DIR   = tmp
 BIN_DIR   = bin
 
@@ -46,7 +50,8 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/pit.o \
               $(TMP_DIR)/speaker.o \
               $(TMP_DIR)/timer.o \
-              $(TMP_DIR)/random.o
+              $(TMP_DIR)/random.o \
+              $(TMP_DIR)/rust_main.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -136,6 +141,11 @@ $(TMP_DIR)/timer.o: $(KERN_DIR)/timer.c | $(TMP_DIR)
 
 $(TMP_DIR)/random.o: $(KERN_DIR)/random.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
+# Stage 2 - Rust
+
+$(TMP_DIR)/rust_main.o: $(RUST_DIR)/main.rs | $(TMP_DIR)
+	$(RUSTC) $(RUST_FLAGS) $< -o $@
 
 
 # Link Stage 2 using 64-bit ELF engine
