@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "../util/debug.h"
 #include "../util/numbers.h"
+#include "../util/flags.h"
 #include "../arch/idt.h"
 #include "../drivers/keyboard.h"
 #include "../drivers/key_code.h"
@@ -43,11 +44,13 @@ void kernel_start(void) {
         while(keyboard_event_pop(&event) && event.type == PRESSED) {
             if (event.code == KEY_CAPS_LOCK) beep(G4, 50);
             textc(CYAN, BLACK);
-            shift = keyflag_read(event, SHIFT);
-            caps = keyflag_read(event, CAPS_LOCK);
+            shift = flag_read(event.flags, SHIFT);
+            caps = flag_read(event.flags, CAPS_LOCK);
             if (event.code != KEY_LEFT_SHIFT 
                 && event.code != KEY_RIGHT_SHIFT 
-                && event.code != KEY_CAPS_LOCK) putc(key_to_ascii(event.code, shift, caps));   
+                && event.code != KEY_CAPS_LOCK) {
+                    putc(key_to_ascii(event.code, shift, caps)); 
+                }  
         }
     }
 }

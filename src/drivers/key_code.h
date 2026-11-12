@@ -42,6 +42,15 @@
 #define KEY_Z 0x2C
 #define KEY_COMMA 0x33
 #define KEY_PERIOD 0x34
+#define KEY_DASH 0x0C
+#define KEY_EQUAL 0x0D
+#define KEY_LEFT_BRACKET 0x1A
+#define KEY_RIGHT_BRACKET 0x1B
+#define KEY_SLASH 0x35
+#define KEY_BACK_SLASH 0x2B
+#define KEY_SEMICOLON 0x27
+#define KEY_QUOTE 0x28
+#define KEY_BACK_TICK 0x29
 #define KEY_SPACE 0x39
 #define KEY_ENTER 0x1C
 #define KEY_BACKSPACE 0x0E

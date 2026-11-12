@@ -15,6 +15,14 @@ u8 vga_col = 0;
 u8 vga_row = 0;
 u8 color = WHITE | (BLACK << 4);
 
+void tab(void) {
+    if (vga_col + 4 >= NUM_COLS) {
+        putnl();
+    } else {
+        vga_col += 4;
+    }
+}
+
 void putnl(void) {
     vga_col = 0;
 
@@ -66,6 +74,9 @@ void putc(char character) {
         return;
     } else if (character == '\b') {
         backspace();
+        return;
+    } else if (character == '\t') {
+        tab();
         return;
     }
 

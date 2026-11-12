@@ -27,8 +27,6 @@ enum KeyFlag {
 void keyboard_init(void);
 void keyboard_set_handler(void (*handler) (struct KeyboardEvent event));
 
-b8 keyflag_read(struct KeyboardEvent event, u8 flag);
-
 void keyboard_event_push(struct KeyboardEvent event);
 b8 keyboard_event_pop(struct KeyboardEvent* event);
 

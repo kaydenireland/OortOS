@@ -40,10 +40,19 @@ char key_to_ascii(u16 code, b8 shift, b8 caps) {
         case KEY_Z: return (shift ^ caps) ? 'Z' : 'z';
         case KEY_COMMA: return shift ? '<' : ',';
         case KEY_PERIOD: return shift ? '>' : '.';
+        case KEY_BACK_TICK: return shift ? '~' : '`';
+        case KEY_DASH: return shift ? '_' : '-';
+        case KEY_EQUAL: return shift ? '+' : '=';
+        case KEY_LEFT_BRACKET: return shift ? '{' : '[';
+        case KEY_RIGHT_BRACKET: return shift ? '}' : ']';
+        case KEY_BACK_SLASH: return shift ? '|' : '\\';
+        case KEY_SEMICOLON: return shift ? ':' : ';';
+        case KEY_QUOTE: return shift ? '\"' : '\'';
+        case KEY_SLASH: return shift ? '?' : '/';
         case KEY_SPACE: return ' ';
         case KEY_ENTER: return '\n';
         case KEY_BACKSPACE: return '\b';
-        // case KEY_TAB: return '\t';
+        case KEY_TAB: return '\t';
     }    
     
     return '?';

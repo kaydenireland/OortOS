@@ -2,10 +2,7 @@
 #include "../arch/idt.h"
 #include "ps2.h"
 #include "../util/debug.h"
-
-static u8 set_keyflag(u8 flags, u8 flag);
-static u8 clear_keyflag(u8 flags, u8 flag);
-static u8 toggle_keyflag(u8 flags, u8 flag);
+#include "../util/flags.h"
 
 #define EXTENDED_SCAN_CODE 0xE0
 
@@ -43,15 +40,15 @@ void keyboard_handler(void) {
 
     if (fat_code == 0x2A || fat_code == 0x36) {
         if (event.type == PRESSED) {
-            keyboard_flags = set_keyflag(keyboard_flags, SHIFT);
+            keyboard_flags = flag_set(keyboard_flags, SHIFT);
         } else {
-            keyboard_flags = clear_keyflag(keyboard_flags, SHIFT);
+            keyboard_flags = flag_clear(keyboard_flags, SHIFT);
         }
     }
 
     if (fat_code == 0x3A) {
         if (event.type == PRESSED) {
-            keyboard_flags = toggle_keyflag(keyboard_flags, CAPS_LOCK);
+            keyboard_flags = flag_toggle(keyboard_flags, CAPS_LOCK);
         }
     }
 
@@ -69,22 +66,6 @@ void keyboard_init(void) {
 
 void keyboard_set_handler(void (*handler)(struct KeyboardEvent event)) {
 	keyboard_handler_user = handler;	
-}
-
-b8 keyflag_read(struct KeyboardEvent event, u8 flag) {
-    return event.flags & (1 << flag);
-}
-
-u8 set_keyflag(u8 flags, u8 flag) {
-    return  flags | (1 << flag);
-}
-
-u8 clear_keyflag(u8 flags, u8 flag) {
-    return flags & ~(1 << flag);
-}
-
-u8 toggle_keyflag(u8 flags, u8 flag) {
-    return flags ^ (1 << flag);
 }
 
 #define QUEUE_SIZE 128
