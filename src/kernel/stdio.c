@@ -97,12 +97,28 @@ void putln(const char* str) {
     putnl();
 }
 
-void print_reset_color(void) {
-    print_set_color(WHITE, BLACK);
+void resetc(void) {
+    textc(WHITE, BLACK);
 }
 
-void print_set_color(u8 fg, u8 bg) {
+void textc(u8 fg, u8 bg) {
     color = fg + (bg << 4);
+}
+
+void print_u64(u64 val, u8 base) {
+    if (base == BINARY) {
+        print_u64_bin(val);
+    } else if (base == OCTAL) {
+        print_u64_oct(val);
+    } else if (base == DECIMAL) {
+        print_u64_deci(val);
+    } else if (base == BINARY) {
+        print_u64_bin(val);
+    } else if (base == HEX) {
+        print_u64_hex(val);
+    } else {
+        putc('0');
+    }
 }
 
 void print_u64_deci(u64 val) {

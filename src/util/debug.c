@@ -1,7 +1,4 @@
 #include "debug.h"
-#include <stdarg.h>
-
-#include "../util/numbers.h"
 
 
 void dbg_putc(char c) {

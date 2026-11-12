@@ -46,7 +46,7 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/pit.o \
               $(TMP_DIR)/speaker.o \
               $(TMP_DIR)/timer.o \
-              $(TMP_DIR)/random.o
+              $(TMP_DIR)/random.o \
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -87,10 +87,10 @@ $(BOOT_BIN): $(BOOT_EXE) | $(BIN_DIR)
 $(TMP_DIR)/prot.o: $(PROT_SRC) | $(TMP_DIR)
 	$(AS) $(ASFLAGS_64) -c $< -o $@
 
-$(TMP_DIR)/port_s.o: $(ARCH_DIR)/port_s.s | $(TMP_DIR)
+$(TMP_DIR)/port_s.o: $(ARCH_DIR)/port.s | $(TMP_DIR)
 	$(AS) $(KERNEL_FLAGS) -c $< -o $@
 
-$(TMP_DIR)/idt_s.o: $(ARCH_DIR)/idt_s.s | $(TMP_DIR)
+$(TMP_DIR)/idt_s.o: $(ARCH_DIR)/idt.s | $(TMP_DIR)
 	$(AS) $(KERNEL_FLAGS) -c $< -o $@
 
 # Stage 2 - C

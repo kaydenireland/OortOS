@@ -1,6 +1,6 @@
 #include "key_code.h"
 
-char key_to_ascii(uint16_t code) {
+char key_to_ascii(u16 code) {
     switch (code) {
         case KEY_0: return '0';
         case KEY_1: return '1';

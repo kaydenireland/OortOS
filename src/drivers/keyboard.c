@@ -48,3 +48,27 @@ void keyboard_init(void) {
 void keyboard_set_handler(void (*handler)(struct KeyboardEvent event)) {
 	keyboard_handler_user = handler;	
 }
+
+#define QUEUE_SIZE 128
+
+static u8 buffer[QUEUE_SIZE];
+static volatile u8 head = 0;
+static volatile u8 tail = 0;
+
+void scancode_push(u8 code) {
+    u8 next = (tail + 1) % QUEUE_SIZE;
+
+    if (next == head) return;   // drop key press if queue is full
+
+    buffer[tail] = code;
+    tail = next;
+}
+
+b8 scancode_pop(u8* code) {
+    if (head == tail) return false; // queue is empty
+
+    *code = buffer[head];
+    head = (head + 1) % QUEUE_SIZE;
+
+    return true;
+}

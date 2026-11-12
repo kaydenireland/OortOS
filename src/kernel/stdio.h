@@ -22,6 +22,14 @@ enum {
 	WHITE = 15,
 };
 
+enum {
+	ZERO = 0,
+	BINARY = 2,
+	OCTAL = 8,
+	DECIMAL = 10,
+	HEX = 16
+};
+
 void clear_row(u8 row);
 void print_clear(void);
 
@@ -31,9 +39,10 @@ void putln(const char* str);
 void putnl(void);
 void printf(char* fmt, ...);
 
-void print_reset_color(void);
-void print_set_color(u8 fg, u8 bg);
+void resetc(void);
+void textc(u8 fg, u8 bg);
 
+void print_u64(u64 val, u8 base);
 void print_u64_deci(u64 val);
 void print_u64_oct(u64 val);
 void print_u64_hex(u64 val);
