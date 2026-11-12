@@ -47,7 +47,10 @@
 #define KEY_BACKSPACE 0x0E
 #define KEY_TAB 0x0F
 #define KEY_CAPS_LOCK 0x3A
+#define KEY_LEFT_SHIFT 0x2A
+#define KEY_RIGHT_SHIFT 0x36
 
-char key_to_ascii(u16 code);
+
+char key_to_ascii(u16 code, b8 shift, b8 caps);
 
 #endif

@@ -3,7 +3,13 @@
 #include "ps2.h"
 #include "../util/debug.h"
 
+static u8 set_keyflag(u8 flags, u8 flag);
+static u8 clear_keyflag(u8 flags, u8 flag);
+static u8 toggle_keyflag(u8 flags, u8 flag);
+
 #define EXTENDED_SCAN_CODE 0xE0
+
+static u8 keyboard_flags = 0b0000;
 
 void (*keyboard_handler_user)(struct KeyboardEvent event);
 
@@ -27,6 +33,7 @@ void keyboard_handler(void) {
     }
 
     struct KeyboardEvent event;
+
     
     if ((scan_code & 0x80) == 0) {
         event.type = PRESSED;
@@ -34,7 +41,22 @@ void keyboard_handler(void) {
         event.type = RELEASED;
     }
 
+    if (fat_code == 0x2A || fat_code == 0x36) {
+        if (event.type == PRESSED) {
+            keyboard_flags = set_keyflag(keyboard_flags, SHIFT);
+        } else {
+            keyboard_flags = clear_keyflag(keyboard_flags, SHIFT);
+        }
+    }
+
+    if (fat_code == 0x3A) {
+        if (event.type == PRESSED) {
+            keyboard_flags = toggle_keyflag(keyboard_flags, CAPS_LOCK);
+        }
+    }
+
     event.code = fat_code;
+    event.flags = keyboard_flags;
 
     keyboard_handler_user(event);
 }
@@ -49,25 +71,41 @@ void keyboard_set_handler(void (*handler)(struct KeyboardEvent event)) {
 	keyboard_handler_user = handler;	
 }
 
+b8 keyflag_read(struct KeyboardEvent event, u8 flag) {
+    return event.flags & (1 << flag);
+}
+
+u8 set_keyflag(u8 flags, u8 flag) {
+    return  flags | (1 << flag);
+}
+
+u8 clear_keyflag(u8 flags, u8 flag) {
+    return flags & ~(1 << flag);
+}
+
+u8 toggle_keyflag(u8 flags, u8 flag) {
+    return flags ^ (1 << flag);
+}
+
 #define QUEUE_SIZE 128
 
-static u8 buffer[QUEUE_SIZE];
+static struct KeyboardEvent buffer[QUEUE_SIZE];
 static volatile u8 head = 0;
 static volatile u8 tail = 0;
 
-void scancode_push(u8 code) {
+void keyboard_event_push(struct KeyboardEvent event) {
     u8 next = (tail + 1) % QUEUE_SIZE;
 
     if (next == head) return;   // drop key press if queue is full
 
-    buffer[tail] = code;
+    buffer[tail] = event;
     tail = next;
 }
 
-b8 scancode_pop(u8* code) {
+b8 keyboard_event_pop(struct KeyboardEvent* event) {
     if (head == tail) return false; // queue is empty
 
-    *code = buffer[head];
+    *event = buffer[head];
     head = (head + 1) % QUEUE_SIZE;
 
     return true;

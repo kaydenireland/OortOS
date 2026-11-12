@@ -9,11 +9,7 @@
 #include "timer.h"
 
 void handle_keyboard_input(struct KeyboardEvent event) {
-    if (event.type == PRESSED) {
-        // textc(CYAN, BLACK);
-        // putc(key_to_ascii(event.code));      
-        scancode_push(event.code);  
-    } else if (event.type == RELEASED) {}
+    keyboard_event_push(event);
 }
 
 void kernel_init(void) {
@@ -40,14 +36,18 @@ void kernel_start(void) {
     puts("\"Every atom in your body came from a star that exploded. And, the atoms in your left hand probably came from a different star than your right hand. It really is the most poetic thing I know about physics: You are all stardust.\"\n");
     textc(MAGENTA, BLACK);
     puts("     - Lawrence M. Krauss\n\n");
-
-    beep(G4, 50);
     
-    u8 code;
+    struct KeyboardEvent event;
+    b8 shift, caps;
     while(1) {
-        while(scancode_pop(&code)) {
+        while(keyboard_event_pop(&event) && event.type == PRESSED) {
+            if (event.code == KEY_CAPS_LOCK) beep(G4, 50);
             textc(CYAN, BLACK);
-            putc(key_to_ascii(code));   
+            shift = keyflag_read(event, SHIFT);
+            caps = keyflag_read(event, CAPS_LOCK);
+            if (event.code != KEY_LEFT_SHIFT 
+                && event.code != KEY_RIGHT_SHIFT 
+                && event.code != KEY_CAPS_LOCK) putc(key_to_ascii(event.code, shift, caps));   
         }
     }
 }
