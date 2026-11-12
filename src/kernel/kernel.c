@@ -8,6 +8,7 @@
 #include "../drivers/key_code.h"
 #include "../drivers/speaker.h"
 #include "timer.h"
+#include "music.h"
 
 void handle_keyboard_input(struct KeyboardEvent event) {
     keyboard_event_push(event);
@@ -37,6 +38,8 @@ void kernel_start(void) {
     puts("\"Every atom in your body came from a star that exploded. And, the atoms in your left hand probably came from a different star than your right hand. It really is the most poetic thing I know about physics: You are all stardust.\"\n");
     textc(MAGENTA, BLACK);
     puts("     - Lawrence M. Krauss\n\n");
+
+    play_tetris();
     
     struct KeyboardEvent event;
     b8 shift, caps;
@@ -50,7 +53,7 @@ void kernel_start(void) {
                 && event.code != KEY_RIGHT_SHIFT 
                 && event.code != KEY_CAPS_LOCK) {
                     putc(key_to_ascii(event.code, shift, caps)); 
-                }  
+                } 
         }
     }
 }
