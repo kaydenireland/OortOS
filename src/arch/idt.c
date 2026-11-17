@@ -5,6 +5,7 @@
 
 #define IDT_IRQ0_TIMER 0x20
 #define IDT_IRQ1_KEYBOARD 0x21
+#define IDT_IRQ12_MOUSE 0x2C
 
 #define IDT_GATE_PRESENT (1 << 7)
 
@@ -20,6 +21,7 @@
 
 extern void idt_pit_handler_wrapped(void);
 extern void idt_keyboard_handler_wrapped(void);
+extern void idt_mouse_handler_wrapped(void);
 
 struct IdtEntry {
     u16 offset_low;
@@ -43,6 +45,7 @@ extern void idt_load(struct IdtPtr *idt_ptr);
 
 void (*idt_pit_handler_user)();
 void (*idt_keyboard_handler_user)();
+void (*idt_mouse_handler_user)();
 
 
 void idt_set_entry(u8 vector, u64 isr_addr, u16 selector, u8 type) {
@@ -73,6 +76,15 @@ void idt_keyboard_handler(void) {
     pic_eoi_master();
 }
 
+void idt_mouse_handler(void) {
+    if (idt_mouse_handler_user != null) {
+        idt_mouse_handler_user();
+    }
+
+    pic_eoi_slave();
+    pic_eoi_master();
+}
+
 void idt_init(void) {
     dbg_putln("Initializng Interrupt Descriptor Table");
     pic_remap();
@@ -94,6 +106,13 @@ void idt_init(void) {
         IDT_ENTRY_TYPE_INTERRUPT
     );
 
+    idt_set_entry(
+        IDT_IRQ12_MOUSE,
+        (u64) idt_mouse_handler_wrapped,
+        GDT_SELECTOR_CS_KERNEL,
+        IDT_ENTRY_TYPE_INTERRUPT
+    );
+
     idt_load(&idt_ptr);
 
     asm volatile("sti");
@@ -103,6 +122,10 @@ void idt_set_pit_handler(void (*handler)(void)) {
     idt_pit_handler_user = handler;
 }
 
-void idt_set_keyboard_handler(void (*handler)()) {
+void idt_set_keyboard_handler(void (*handler)(void)) {
 	idt_keyboard_handler_user = handler;
+}
+
+void idt_set_mouse_handler(void (*handler)(void)) {
+	idt_mouse_handler_user = handler;
 }

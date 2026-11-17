@@ -93,13 +93,8 @@ void putc(char character) {
 }
 
 void puts(const char* str) {
-    for(u8 i = 0; 1; i++) {
-        char character = (u8) str[i];
-
-        if (character == '\0') {
-            return;
-        }
-        putc(character);
+    while (*str) {
+        putc(*str++);
     }
 }
 

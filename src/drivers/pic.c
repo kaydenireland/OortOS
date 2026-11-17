@@ -11,6 +11,7 @@
 #define IRQ0_TIMER 0x00
 #define IRQ1_KEYBOARD 0x01
 #define IRQ2_SLAVE 0x02
+#define IRQ12_MOUSE 0x0C
 
 #define ICW1_INIT 0x10
 #define ICW1_HAS_ICW4 0x01
@@ -68,8 +69,15 @@ void pic_remap(void) {
 	// Unmask desired interrupts
 	u8 mask_master = inb(PIC1_DATA_PORT);
 	u8 mask_slave = inb(PIC2_DATA_PORT);
+
+	// Master
 	mask_master &= ~(1 << IRQ0_TIMER);
 	mask_master &= ~(1 << IRQ1_KEYBOARD);
+	mask_master &= ~(1 << IRQ2_SLAVE);
+
+	// Slave
+	mask_slave &= ~(1 << (IRQ12_MOUSE - 8));
+
 	outb(PIC1_DATA_PORT, mask_master);
 	portw();
 	outb(PIC2_DATA_PORT, mask_slave);

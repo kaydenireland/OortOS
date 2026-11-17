@@ -48,7 +48,8 @@ STAGE2_OBJS = $(TMP_DIR)/prot.o \
               $(TMP_DIR)/timer.o \
               $(TMP_DIR)/random.o \
               $(TMP_DIR)/flags.o \
-              $(TMP_DIR)/music.o
+              $(TMP_DIR)/music.o \
+              $(TMP_DIR)/mouse.o
 
 OORT_IMG = $(BIN_DIR)/oort.img
 
@@ -124,6 +125,9 @@ $(TMP_DIR)/keyboard.o: $(DRIVE_DIR)/keyboard.c | $(TMP_DIR)
 $(TMP_DIR)/key_code.o: $(DRIVE_DIR)/key_code.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
+$(TMP_DIR)/mouse.o: $(DRIVE_DIR)/mouse.c | $(TMP_DIR)
+	$(CC) $(KERNEL_FLAGS) -c $< -o $@
+
 $(TMP_DIR)/pic.o: $(DRIVE_DIR)/pic.c | $(TMP_DIR)
 	$(CC) $(KERNEL_FLAGS) -c $< -o $@
 
@@ -179,3 +183,4 @@ run: $(OORT_IMG)
 		-d cpu_reset,guest_errors,unimp \
 		-audiodev dsound,id=audio0 \
 		-machine pc,pcspk-audiodev=audio0
+		

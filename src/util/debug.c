@@ -1,5 +1,7 @@
 #include "debug.h"
 
+#include "../arch/port.h"
+
 
 void dbg_putc(char c) {
     outb(0xE9, c);

@@ -1,5 +1,6 @@
 .extern idt_pit_handler
 .extern idt_keyboard_handler
+.extern idt_mouse_handler
 
 .globl idt_load
 idt_load:
@@ -58,3 +59,4 @@ idt_load:
 
 wrapped_handler idt_pit_handler
 wrapped_handler idt_keyboard_handler
+wrapped_handler idt_mouse_handler

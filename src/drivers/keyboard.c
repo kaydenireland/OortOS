@@ -13,7 +13,8 @@ void (*keyboard_handler_user)(struct KeyboardEvent event);
 void keyboard_handler(void) {
     static b8 is_extended = 0;
 
-    u8 scan_code = ps2_read_scan_code();
+    u8 scan_code;
+    if (!ps2_read_keyboard(&scan_code)) return;
 
     if (scan_code == EXTENDED_SCAN_CODE) {
         is_extended = true;
@@ -61,7 +62,6 @@ void keyboard_handler(void) {
 void keyboard_init(void) {
     dbg_putln("Initializing Keyboard");
     idt_set_keyboard_handler(keyboard_handler);
-    idt_init();
 }
 
 void keyboard_set_handler(void (*handler)(struct KeyboardEvent event)) {

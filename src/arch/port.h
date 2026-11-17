@@ -3,8 +3,8 @@
 
 #include "../util/numbers.h"
 
-u8 port_inb(u16 port_id);   // get input from given port
-void port_outb(u16 port_id, u8 data);   // send output to port
-void port_wait(void);
+u8 inb(u16 port_id);   // get input from given port
+void outb(u16 port_id, u8 data);   // send output to port
+void portw(void);   // shotr delay
 
 #endif

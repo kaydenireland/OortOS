@@ -1,5 +1,8 @@
 #include "music.h"
 
+#include "../drivers/speaker.h"
+#include "../kernel/timer.h"
+
 
 void play_entertainer(void) {
     static const struct MusicNote melody[] = {
